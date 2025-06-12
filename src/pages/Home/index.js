@@ -13,7 +13,9 @@ import Modal from "../../containers/Modal";
 import { useData } from "../../contexts/DataContext";
 
 const Page = () => {
-  const {last} = useData()
+  const { data } = useData();
+  const last = data?.last;
+
   return <>
     <header>
       <Menu />
@@ -114,7 +116,7 @@ const Page = () => {
       </div>
     </main>
     <footer className="row">
-      
+            
      {last && (
         <div className="col presta">
           <h3>Notre dernière prestation</h3>

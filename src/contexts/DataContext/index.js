@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useMemo
 } from "react";
 
 const DataContext = createContext({});
@@ -19,26 +20,34 @@ export const api = {
 export const DataProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+
   const getData = useCallback(async () => {
     try {
-      setData(await api.loadData());
+      const result = await api.loadData();
+
+      // Ici on dérive la donnée une seule fois !
+      const events = result.events || [];
+      const last = events.length > 0 ? events[events.length - 1] : null;
+
+      setData({
+        ...result,
+        last,  // On ajoute directement la propriété last dans le data fourni
+      });
     } catch (err) {
       setError(err);
     }
   }, []);
+
   useEffect(() => {
     if (data) return;
     getData();
-  });
-  
+  }, [data, getData]); // <-- pense bien à ajouter les dépendances
+
+    // ✅ Optimisation useMemo ici :
+  const contextValue = useMemo(() => ({ data, error }), [data, error]);
+
   return (
-    <DataContext.Provider
-      // eslint-disable-next-line react/jsx-no-constructed-context-values
-      value={{
-        data,
-        error,
-      }}
-    >
+    <DataContext.Provider value={contextValue}>
       {children}
     </DataContext.Provider>
   );
@@ -46,8 +55,7 @@ export const DataProvider = ({ children }) => {
 
 DataProvider.propTypes = {
   children: PropTypes.node.isRequired,
-}
+};
 
 export const useData = () => useContext(DataContext);
-
 export default DataContext;
