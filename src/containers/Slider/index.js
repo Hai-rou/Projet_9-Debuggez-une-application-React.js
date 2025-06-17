@@ -8,7 +8,7 @@ const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
 
-  // 🔽 Trie les événements par date décroissante (plus récent d'abord)
+  // Trie les événements par date décroissante (plus récent d'abord)
   const byDateDesc = [...(data?.focus || [])].sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );

@@ -45,26 +45,40 @@ const EventList = () => {
             onChange={(value) => (value ? changeType(value) : changeType(null))}
           />
           <div id="events" className="ListContainer">
+
+            {/* On parcourt tous les événements filtrés pour les afficher */}
             {filteredEvents.map((evt) => {
+              
+              // On parse la date de l'événement pour la convertir en objet Date JS (grâce au helper)
               const dateObj = parseEventDate(evt.date);
 
+              // Pour chaque événement, on retourne un bloc Modal + EventCard
               return (
-                <Modal key={evt.id} Content={
-                  <ModalEvent event={evt} />
-                }>
+                // Composant Modal qui entoure chaque EventCard (affiche la popup au clic)
+                <Modal 
+                  key={evt.id} // clé unique pour React (toujours obligatoire dans un .map)
+                  Content={
+                    // Contenu affiché dans la modal quand elle est ouverte
+                    <ModalEvent event={evt} />
+                  }
+                >
+
+                  {/* Fonction enfant du Modal (pattern "render props") */}
                   {({ setIsOpened }) => (
+                    // Composant EventCard qui affiche la miniature de l'événement
                     <EventCard
-                      onClick={() => setIsOpened(true)}
-                      imageSrc={evt.cover}
-                      title={evt.title}
-                      date={dateObj}
-                      label={evt.type}
+                      onClick={() => setIsOpened(true)} // Ouvre la modal au clic sur la carte
+                      imageSrc={evt.cover} // Image de l'événement
+                      title={evt.title}    // Titre de l'événement
+                      date={dateObj}       // Date de l'événement (déjà parsée juste avant)
+                      label={evt.type}     // Type d'événement (conférence, soirée, etc.)
                     />
                   )}
                 </Modal>
               );
             })}
           </div>
+
 
           <div className="Pagination">
             {[...Array(pageNumber)].map((_, n) => (

@@ -118,14 +118,17 @@ const Page = () => {
     <footer className="row">
             
      {last && (
+        // Conteneur pour l'affichage de la dernière prestation
         <div className="col presta">
+          
           <h3>Notre dernière prestation</h3>
+          
           <EventCard
-            imageSrc={last.cover}
-            title={last.title}
-            date={new Date(last.date)}
-            small
-            label="boom"
+            imageSrc={last.cover} // Image de couverture de l'événement
+            title={last.title}     // Titre de l'événement
+            date={new Date(last.date)} // Conversion de la date en objet Date JS (à partir de la string ISO)
+            small                  // Propriété small activée (probablement une version réduite de la carte)
+            label="boom"           // Label statique pour cet affichage (ici "boom" en dur)
           />
         </div>
       )}

@@ -42,3 +42,6 @@ describe("When slider is created", () => {
     );
   });
 });
+
+
+// Nouveau test ==> faire à la suite
