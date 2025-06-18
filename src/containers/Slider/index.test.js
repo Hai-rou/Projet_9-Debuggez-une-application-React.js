@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import Slider from "./index";
 import { api, DataProvider } from "../../contexts/DataContext";
 
@@ -45,3 +45,18 @@ describe("When slider is created", () => {
 
 
 // Nouveau test ==> faire à la suite
+
+describe("Slider pause on spacebar", () => {
+  it("should pause when space is pressed", async () => {
+    render(<Slider />);
+
+    // Attendre que le texte initial soit bien monté (useEffect exécuté)
+    await screen.findByText("Lecture");
+
+    // Maintenant seulement on peut déclencher l'event
+    fireEvent.keyDown(window, { code: "Space" });
+
+    // On vérifie le changement de state visible
+    await screen.findByText("En pause");
+  });
+});

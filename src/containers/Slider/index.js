@@ -7,26 +7,50 @@ import "./style.scss";
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   // Trie les événements par date décroissante (plus récent d'abord)
   const byDateDesc = [...(data?.focus || [])].sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
 
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.code === "Space") {
+        setPaused(prev => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+
   // 🔁 Lance un changement de slide toutes les 5 secondes
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIndex((prev) =>
-        prev < byDateDesc.length - 1 ? prev + 1 : 0 // revient à 0 à la fin
-      );
-    }, 5000);
+    let timer;
 
-    // Nettoyage du timer à chaque re-render
-    return () => clearTimeout(timer);
-  }, [index, byDateDesc.length]);
+    if (!paused) {
+      timer = setTimeout(() => {
+        setIndex((prev) =>
+          prev < byDateDesc.length - 1 ? prev + 1 : 0
+        );
+      }, 3000);
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [index, byDateDesc.length, paused]); 
+
 
   return (
+
     <div className="SlideCardList">
+      
+      {paused ? <div>En pause</div> : <div>Lecture</div>}
+
       {/* 🎞️ Slides : une seule slide visible à la fois */}
       {byDateDesc.map((event, idx) => (
         <div
